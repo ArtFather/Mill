@@ -1,6 +1,12 @@
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+string appkey1 = builder.Configuration.GetValue<string>("AirtableApiLogin:APPKEY");
+string baseid = builder.Configuration.GetValue<string>("AirtableApiLogin:BASEID");
+string table = builder.Configuration.GetValue<string>("AirtableApiLogin:TABLE");
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
