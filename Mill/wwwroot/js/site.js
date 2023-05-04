@@ -1,4 +1,23 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿function LoadData() {
+    var recordData = [];
+    $.ajax({
+        type: "POST",
+        url: "/Line/GetDataLine1/",
+        async: false,
+        success: function (data) {
+            $.each(data, function (key, value) {
+                recordData.push([value.id, value.order, value.part, value.qty, value.name, value.date, value.run, value.material, value.reason, value.routingCode, value.comment, value.wc, value.optimized, value.optimizedDate, value.rush, value.cutAt])
+            })
 
-// Write your JavaScript code.
+            console.log(data);
+        },
+        failure: function (err) { }
+    });
+
+    $('#tbldata').DataTable({
+        data: recordData,
+        "columnDefs": [
+            { "width": "80%", "targets": 0 }
+        ]
+    });
+}

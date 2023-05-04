@@ -1,8 +1,38 @@
 ﻿
-@{
-    ViewData["Title"] = "LineOne";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+<html lang="en">
 
-<h1>LineOne</h1>
+<head>
+    <title>My Document</title>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <link href="~/css/jquery.datatables.css" rel="stylesheet" />
+    <script src="~/js/jquery.datatables.js"></script>
+    <script src="/js/site.js"></script>
+</head>
 
+<body>
+    <p>
+        @ViewBag.Message
+    </p>
+    <p>
+        @ViewBag.Error
+    </p>
+    <p>
+    </p>
+
+    <table id="tbldata" class="tableData">
+        <thead>
+        <tr>
+            <th>id</th>
+            @foreach (string column in ViewBag.Columns)
+            {
+                <th>@column</th>
+            }
+        </tr>
+        </thead>
+    </table>
+</body>
+</html>
+
+<script>
+     LoadData();
+</script>
