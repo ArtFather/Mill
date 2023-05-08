@@ -14,6 +14,8 @@ namespace Mill.Controllers
         List<AirtableRecord> reecords = new List<AirtableRecord>();
         DataTable dt = new DataTable();
         public IEnumerable<string> fields = new string[] { "Order #", "Part # +", "QTY", "NAME", "DATE", "Run Number (from Master List)", "MATERIAL/COLOUR", "REASON FOR REORDER", "Mill Routing Code", "COMMENT", "WC #", "Optimized", "Optimized Date", "Rush", "Cut @ Router Time" };
+        public IEnumerable<string> headers= new string[] { "Order #", "Part #", "QTY", "NAME", "DATE", "Run", "MATERIAL/COLOUR", "REASON FOR REORD", "Mill", "COMMENT", "WC #", "Optimized", "Optimized Date", "Rush", "Cut @ Router" };
+
         private readonly IConfiguration _configuration;
 
         public LineController(IConfiguration configuration)
@@ -23,7 +25,7 @@ namespace Mill.Controllers
 
         public IActionResult Line1()
         {
-            ViewBag.Columns = fields;
+            ViewBag.Columns = headers;
             return View();
         }
 
@@ -105,6 +107,7 @@ namespace Mill.Controllers
                 }
 
                 int i = 0;
+                reecords.Reverse();
                 foreach (var record in reecords)
                 {
 

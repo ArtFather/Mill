@@ -1,38 +1,109 @@
-﻿
+﻿<!doctype html>
 <html lang="en">
-
 <head>
-    <title>My Document</title>
-    <script src="~/lib/jquery/dist/jquery.js"></script>
-    <link href="~/css/jquery.datatables.css" rel="stylesheet" />
-    <script src="~/js/jquery.datatables.js"></script>
-    <script src="/js/site.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.21.4/dist/bootstrap-table.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.21.4/dist/bootstrap-table.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.21.4/dist/extensions/cookie/bootstrap-table-cookie.min.js"></script>
 </head>
 
 <body>
-    <p>
-        @ViewBag.Message
-    </p>
-    <p>
-        @ViewBag.Error
-    </p>
-    <p>
-    </p>
-
-    <table id="tbldata" class="tableData">
+    <table id="table"
+        data-search="true"
+        data-show-refresh="true" 
+        data-show-fullscreen="true" 
+        data-row-style="rowStyle"
+        data-show-columns="true"
+        data-cookie="true"
+        data-buttons="buttons"
+        data-cookie-id-table="saveId">
         <thead>
-        <tr>
-            <th>id</th>
-            @foreach (string column in ViewBag.Columns)
-            {
-                <th>@column</th>
-            }
-        </tr>
+            <tr>
+                <th data-sortable="true">id</th>
+                @foreach (string column in ViewBag.Columns)
+                {
+                    <th>@column</th>
+                }
+            </tr>   
         </thead>
     </table>
+
+    <script>
+        var recordData = [];
+        var $table = $('#table')
+        $.ajax({
+            type: "POST",
+            url: "/Line/GetDataLine1/",
+            async: false,
+            success: function (data) {
+                $.each(data, function (key, value) {
+                    recordData.push([value.id, value.order, value.part, value.qty, value.name, value.date, value.run, value.material, value.reason, value.routingCode, value.comment, value.wc, value.optimized, value.optimizedDate, value.rush, value.cutAt])
+                }),
+                    $table.bootstrapTable({ data: recordData })
+                    
+            },
+            failure: function (err) { }
+        });
+
+
+        function rowStyle(row, index) {
+            if (row[14] === '**RUSH**') {
+                return {
+                    classes: 'bg-redd'
+                }
+            }
+            if (row[15] != 0) {
+                return {
+                    classes: 'bg-gree'
+                }
+            }
+            return {
+                css: {
+                    color: 'black'
+                }
+            }
+        }
+
+        $table.bootstrapTable('toggleFullscreen')
+
+        function buttons() {
+            return {
+                btnUsersAdd: {
+                    text: 'Hide complited',
+                    icon: 'bi-bag-dash',
+                            event: function () {
+                        var dataTable = $table.bootstrapTable('getData');
+                        dataTable.forEach(function (key, value) {
+                           
+                            if(key[15] != 0) {$table.bootstrapTable('hideRow', {index: value})}
+
+                            console.log('value-' + value + 'Hidden-')
+                             }
+                        )},
+
+                    attributes: {
+                        title: 'Hide finished orders'
+                    }
+                },
+                btnAdd: {
+                    text: 'Show all',
+                    icon: 'bi-bag-check-fill',
+                    event: function () {
+                        $table.bootstrapTable('getHiddenRows', true)
+                    },
+
+                    attributes: {
+                        title: 'Add a new row to the table'
+                    }
+                }
+            }   
+        }
+
+    </script>
 </body>
 </html>
-
-<script>
-     LoadData();
-</script>
